@@ -43,4 +43,4 @@ ExpressionBuilder((functions) => {
     functions.Assert(Assertion.END);
 });
 ```
-this example will be compiled to `/^http(?:s?):\/\/(?:(?:.+?)\.*?)(?:.+?)\.com$/`.
+This example will be compiled to `/^http(?:s?):\/\/(?:(?:.+?)\.*?)(?:.+?)\.com$/`.
