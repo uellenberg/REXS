@@ -34,7 +34,10 @@ export const ParseInput = (input: string) => {
 
         switch(name){
             case "repeat":
-                return "(?:" + input.join("") + ")" + data;
+                const join = input.join("");
+                if(join.length === 1) return join + data;
+
+                return "(?:" + join + ")" + data;
             case "group":
                 return "(" + input.join("") + ")";
             case "or":
