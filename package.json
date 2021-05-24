@@ -1,0 +1,68 @@
+{
+  "name": "REXS",
+  "version": "1.0.0",
+  "description": "REXS is Javascript library that helps in the creation of regular expressions.",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "module": "dist/esm/index.js",
+  "browser": "dist/rexs.min.js",
+  "jsdeliver": "dist/rexs.min.js",
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.browser.json && npx webpack",
+    "test": "nyc --reporter=lcov mocha --slow 0",
+    "coverage": "codecov",
+    "deploy": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uellenberg/REXS.git"
+  },
+  "keywords": [
+	"rexs",
+	"re",
+	"reg",
+	"regex",
+	"regular",
+	"expression",
+	"expressions",
+	"regular expression",
+	"regular expressions",
+	"builder",
+	"creator",
+	"create",
+	"helper",
+	"help",
+	"maker",
+	"make",
+	"easy",
+	"fast",
+	"quick",
+	"quickly"
+  ],
+  "author": "Jonah Uellenberg",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/uellenberg/REXS/issues"
+  },
+  "homepage": "https://github.com/uellenberg/REXS",
+  "devDependencies": {
+    "@types/node": "^15.0.1",
+    "chai": "^4.3.4",
+    "codecov": "^3.8.1",
+    "eslint": "^7.25.0",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=0.14"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

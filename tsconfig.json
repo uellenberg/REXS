@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es2017"],
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "outDir": "dist/cjs",
+    "rootDir": "src",
+    "sourceMap": true,
+    "target": "es6",
+    "declaration": true
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", ".idea", ".env"]
+}

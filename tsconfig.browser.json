@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es2016", "dom", "es5"],
+    "module": "es2015",
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "outDir": "dist/esm",
+    "rootDir": "src",
+    "sourceMap": true,
+    "target": "es5",
+    "declaration": true
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", ".idea", ".env"]
+}

@@ -1,0 +1,13 @@
+.idea
+node_modules
+.gitignore
+.npmignore
+package-lock.json
+yarn.lock
+tsconfig.json
+tsconfig.browser.json
+webpack.config.js
+.nycrc
+coverage
+.github
+.nyc_output
