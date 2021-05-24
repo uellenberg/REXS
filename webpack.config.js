@@ -4,7 +4,7 @@ module.exports = {
     entry: "./dist/esm/index.js",
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "REXS.min.js",
+        filename: "rexs.min.js",
         library: "REXS"
     },
     mode: "production"
