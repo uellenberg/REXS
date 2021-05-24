@@ -209,7 +209,7 @@ export namespace Characters {
      * Match a control character.
      * @param caret {string} - is a one-length character from A-Z indicating the control character.
      */
-    export const Control = (caret: string) : LiteralCharacterInterface => {
+    export const CONTROL = (caret: string) : LiteralCharacterInterface => {
         if(caret.length !== 1 || !/[A-Z]/.test(caret.toUpperCase())) throw new Error("The caret must be a character in A-Z.");
 
         return LiteralCharacter("\\c"+caret.toUpperCase());
@@ -219,7 +219,7 @@ export namespace Characters {
      * Match a character by its character code
      * @param hex {string} - is a two-length or four-length string of hexadecimal digits indicating the character code.
      */
-    export const Hex = (hex: string) : LiteralCharacterInterface => {
+    export const HEX = (hex: string) : LiteralCharacterInterface => {
         if(![2, 4].includes(hex.length) || !/^[0-9a-fA-F]{2}$/.test(hex)) throw new Error("The hex must be two or four characters in 0-9 or A-F");
 
         return LiteralCharacter((hex.length === 2 ? "\\x" : "\\u")+hex.toLowerCase());

@@ -38,7 +38,7 @@ const isLiteralCharacterInterface = (object: any): object is LiteralCharacterInt
 }
 
 const EscapeCharacter = (character: string) : string => {
-    return character.replace(/[-[\]{}()*+?.,\\\/^$|#\s]/g, '\\$&');
+    return character.replace(/[-[\]{}()*+?.,\\\/^$|#]/g, '\\$&');
 }
 
 export const ParseAssertion = (assertion: Assertion) : string => {
