@@ -1,6 +1,6 @@
 {
   "name": "rexs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "REXS is Javascript library that helps in the creation of regular expressions.",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
