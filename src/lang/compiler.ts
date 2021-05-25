@@ -13,7 +13,7 @@ export const Compile = (input: string) : string => {
 
     let flags = {i: false, g: false, m: false, s: false, u: false, y: false};
 
-    return "/" + before + beforeNot + RecursiveMap<string>(tokenizerChain.run(FixSemicolons(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
+    return "/" + before + beforeNot + RecursiveMap<string>(tokenizerChain.run(FixFormatting(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
         switch (input.value) {
             case "repeat":
                 return "repeat-" + ProcessRepeatParams(input.data.split(",").map(x => x.trim().toLowerCase()));
@@ -195,8 +195,8 @@ const ParseRepeatInt = (int: string) : number => {
     throw new Error("Unknown argument for repeat: " + int);
 }
 
-const FixSemicolons = (input: string) : string => {
-    return input.split("\n").map(val => {
+const FixFormatting = (input: string) : string => {
+    return input.replace(/\)\s*?{/gm, ") {").split("\n").map(val => {
         const fixed = val.trim();
 
         if(!fixed) return null;
