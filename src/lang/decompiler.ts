@@ -18,6 +18,11 @@ const REXSDataToString = (data: REXSData[], indent: number = 0) : string => {
     let lines: string[] = [];
 
     for (let tag of data) {
+        if(tag.tag === "ugroup"){
+            lines.push(REXSDataToString(tag.body, indent));
+            continue;
+        }
+
         lines.push(indentStr + tag.tag + "(" + (tag.params || "") + ")" + (tag.body ? " {" : ";"));
 
         if(tag.body){
@@ -40,6 +45,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
 
     if(data && data.startToken.value === "(") {
         if(stringSeq.startsWith("?:")){
+            outerTag = {tag: "ugroup"};
             tokens = tokens.slice(2);
         } else if(stringSeq.startsWith("?=")) {
             outerTag = {tag: "ahead"};
@@ -48,10 +54,10 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
             outerTag = {tag: "ahead", params: "not"};
             tokens = tokens.slice(2);
         } else if(stringSeq.startsWith("?<=")) {
-            outerTag = {tag: "behind"};
+            outerTag = {tag: "before"};
             tokens = tokens.slice(3);
         } else if(stringSeq.startsWith("?<!")) {
-            outerTag = {tag: "behind", params: "not"};
+            outerTag = {tag: "before", params: "not"};
             tokens = tokens.slice(3);
         } else {
             outerTag = {tag: "group"};
@@ -100,7 +106,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
         else if(depth === 0) {
             let token = tokens[i];
 
-            if(token.isToken && !isSet){
+            if(!isSet){
                 if(["*", "+", "?", "{"].includes(token.value) && !curRepeat) {
                     const popped = out.pop();
                     if(popped.tag === "match" && popped.params.startsWith("\"") && popped.params.endsWith("\"")) {
@@ -116,8 +122,9 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
 
                     if(token.value === "{") awaitingEnd = true;
                 } else if(curRepeat && awaitingEnd){
+                    curRepeat.params += token.value;
+
                     if(token.value === "}") {
-                        curRepeat.params += "}";
                         awaitingEnd = false;
                     }
                 } else if(curRepeat && token.value === "?") {
@@ -126,15 +133,15 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
 
                     curRepeat = null;
                     awaitingEnd = false;
-                } else if(curRepeat) {
-                    curRepeat.params = getRepeatParams(curRepeat.params);
-                    out.push(curRepeat);
-
-                    curRepeat = null;
-                    awaitingEnd = false;
-
-                    out.push({tag: "match", params: token.value});
                 } else if(token.value === "|") {
+                    if(curRepeat){
+                        curRepeat.params = getRepeatParams(curRepeat.params);
+                        out.push(curRepeat);
+
+                        curRepeat = null;
+                        awaitingEnd = false;
+                    }
+
                     if(!onOR || !orOut) {
                         orOut = {tag: "or", body: []};
                         onOR = true;
@@ -142,6 +149,14 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
 
                     orOut.body.push({tag: "orpart", body: out});
                     out = [];
+                } else if(curRepeat) {
+                    curRepeat.params = getRepeatParams(curRepeat.params);
+                    out.push(curRepeat);
+
+                    curRepeat = null;
+                    awaitingEnd = false;
+
+                    out.push(tokenToREXS(token));
                 } else {
                     out.push(tokenToREXS(token));
                 }
@@ -254,16 +269,16 @@ const getRepeatParams = (params: string) : string => {
 
 //expressions/unescape.rexs
 const unEscape = (val: string) : string => {
-    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,])/g, "$1");
+    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,])/g, "$1").replace(/\\\\/g, "\\");
 }
 
 //expressions/tokenizer.rexs
-const groupTokenizerChain = new TokenizerChain(new RegexTokenizer(/(?<!\\)(?:\\\\)*((?:[\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,]|\\d|\\D|\\w|\\W|\\s|\\S|\\t|\\r|\\n|\\v|\\f|\[\\b\]|\\\d|\\c[A-]|\\x(?:[0-9a-f]){2}|\\u(?:[0-9a-f]){4}|\\b|\\B))/g)).token(new CustomTokenizer(token => {
+const groupTokenizerChain = new TokenizerChain(new RegexTokenizer(/(?<!\\)(?:\\\\)*((?:[\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,<=!:]|\\d|\\D|\\w|\\W|\\s|\\S|\\t|\\r|\\n|\\v|\\f|\[\\b\]|\\\d|\\c[A-Z]|\\x(?:[0-9a-f]){2}|\\u(?:[0-9a-f]){4}|\\b|\\B))/g)).token(new CustomTokenizer(token => {
     let out = [];
 
     if(token.length > 2) {
-        const value = token.substring(token.length - 1);
-        token = token.substring(0, token.length - 1);
+        const value = token.replace(/\\\\/g, "");
+        token = token.substring(0, token.length - value.length);
 
         if (token) out.push({value: token, isToken: false});
         out.push({value: value, isToken: true});
