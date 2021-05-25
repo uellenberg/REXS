@@ -1,0 +1,17 @@
+flag(g);
+
+before(not) {
+    match("\");
+}
+
+repeat(0, inf) {
+    match("\\");
+}
+
+match("\");
+
+group() {
+    set() {
+        match("*.^$|[]-()+?{},");
+    }
+}

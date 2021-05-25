@@ -151,7 +151,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                 } else if(token.isToken && !["]", "\\", "^", "-"].includes(token.value)) {
                     out.push(tokenToREXS(token));
                 } else {
-                    out.push({tag: "match", params: "\""+token.value+"\""});
+                    out.push({tag: "match", params: "\""+unEscape(token.value)+"\""});
                 }
             } else {
                 if(curRepeat){
@@ -161,7 +161,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     awaitingEnd = false;
                 }
 
-                out.push({tag: "match", params: "\""+token.value+"\""});
+                out.push({tag: "match", params: "\""+unEscape(token.value)+"\""});
             }
         }
 
@@ -202,7 +202,12 @@ const tokenToREXS = (token: Token) : REXSData => {
     const assertion = Object.keys(AssertionMap).filter(key => AssertionMap[key] === token.value);
     if(assertion.length > 0) return {tag: "assert", params: assertion[0]};
 
-    return {tag: "match", params: "\""+token.value+"\""};
+    return {tag: "match", params: "\""+unEscape(token.value)+"\""};
+}
+
+//expressions/unescape.rexs
+const unEscape = (val: string) : string => {
+    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,])/g, "$1");
 }
 
 //expressions/tokenizer.rexs

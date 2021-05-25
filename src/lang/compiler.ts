@@ -79,7 +79,7 @@ const HandleFunction = (token: Token) : string => {
 
         const value = token.value.trim();
 
-        const args = token.data.trim();
+        const args = token.data ? token.data.trim() : null;
 
         if(!functionsFormatted.includes(value)) throw new Error("An invalid function was given: " + token.value);
 
