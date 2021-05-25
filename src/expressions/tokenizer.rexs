@@ -1,0 +1,117 @@
+flag(g);
+
+before(not) {
+    match("\");
+}
+
+repeat(0, inf) {
+    match("\\");
+}
+
+group() {
+    or() {
+        orpart() {
+            set() {
+                match("*.^$|[]-()+?{},");
+            }
+        }
+
+        orpart() {
+            match("\d");
+        }
+
+        orpart() {
+            match("\D");
+        }
+
+        orpart() {
+            match("\w");
+        }
+
+        orpart() {
+            match("\W");
+        }
+
+        orpart() {
+            match("\s");
+        }
+
+        orpart() {
+            match("\S");
+        }
+
+        orpart() {
+            match("\t");
+        }
+
+        orpart() {
+            match("\r");
+        }
+
+        orpart() {
+            match("\n");
+        }
+
+        orpart() {
+            match("\v");
+        }
+
+        orpart() {
+            match("\f");
+        }
+
+        orpart() {
+            match("[\b]");
+        }
+
+        orpart() {
+            match("\");
+            match(DIGIT);
+        }
+
+        orpart() {
+            match("\c");
+            set() {
+                match("A");
+                to():
+                match("Z");
+            }
+        }
+
+        orpart() {
+            match("\x");
+            repeat(2) {
+                set() {
+                    match("0");
+                    to();
+                    match("9");
+                    match("a");
+                    to();
+                    match("f");
+                }
+            }
+        }
+
+        orpart() {
+            match("\u");
+            repeat(4) {
+                set() {
+                    match("0");
+                    to();
+                    match("9");
+                    match("a");
+                    to();
+                    match("f");
+                }
+            }
+        }
+
+        orpart() {
+            match("\b");
+        }
+
+        orpart() {
+            match("\B");
+        }
+    }
+}
