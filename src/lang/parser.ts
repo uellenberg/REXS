@@ -7,7 +7,9 @@ export const ParseInput = (input: string) => {
     let after = "";
     let afterNot = "";
 
-    return before + beforeNot + RecursiveMap<string>(tokenizerChain.run(FixSemicolons(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
+    let flags = {i: false, g: false, m: false, s: false, u: false, y: false};
+
+    return "/" + before + beforeNot + RecursiveMap<string>(tokenizerChain.run(FixSemicolons(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
         switch (input.value) {
             case "repeat":
                 return "repeat-" + ProcessRepeatParams(input.data.split(",").map(x => x.trim().toLowerCase()));
@@ -23,6 +25,11 @@ export const ParseInput = (input: string) => {
                 return "before-" + (input.data.split(",").map(x => x.trim().toLowerCase()).includes("not") ? "not" : "");
             case "after":
                 return "after-" + (input.data.split(",").map(x => x.trim().toLowerCase()).includes("not") ? "not" : "");
+            case "flag":
+                if(!Object.keys(flags).includes(input.data)) throw new Error("A flag was given that does not exist: " + input.data);
+
+                flags[input.data] = true;
+                return "";
             default:
                 return HandleFunction(input);
         }
@@ -57,7 +64,7 @@ export const ParseInput = (input: string) => {
             default:
                 return input.join("");
         }
-    }).join("") + after + afterNot;
+    }).join("") + after + afterNot + "/" + Object.keys(flags).filter(key => flags[key]).join("");
 }
 
 const HandleFunction = (token: Token) : string => {
