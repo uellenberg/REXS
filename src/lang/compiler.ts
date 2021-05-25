@@ -1,7 +1,11 @@
 import {CustomTokenizer, RecursiveMap, RegexTokenizer, Token, TokenizerChain} from "parselib";
 import {Assertion, Characters, ExpressionBuilder} from "../builder";
 
-export const Compile = (input: string) => {
+/**
+ * Compiles REXS into a regular expression string.
+ * @param input {string} - the REXS code as a string.
+ */
+export const Compile = (input: string) : string => {
     let before = "";
     let beforeNot = "";
     let after = "";
