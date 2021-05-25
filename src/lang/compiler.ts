@@ -1,7 +1,7 @@
 import {CustomTokenizer, RecursiveMap, RegexTokenizer, Token, TokenizerChain} from "parselib";
 import {Assertion, Characters, ExpressionBuilder} from "../builder";
 
-export const ParseInput = (input: string) => {
+export const Compile = (input: string) => {
     let before = "";
     let beforeNot = "";
     let after = "";

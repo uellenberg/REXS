@@ -1,3 +1,3 @@
 export * from "./builder";
 
-export {ParseInput} from "./lang/parser";
+export {Compile} from "./lang/compiler";
