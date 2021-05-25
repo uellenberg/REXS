@@ -13,7 +13,7 @@ export const Compile = (input: string) : string => {
 
     let flags = {i: false, g: false, m: false, s: false, u: false, y: false};
 
-    return "/" + before + beforeNot + RecursiveMap<string>(tokenizerChain.run(FixFormatting(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
+    const body = RecursiveMap<string>(tokenizerChain.run(FixFormatting(input)), input => !input.isToken && input.value === "{", input => !input.isToken && input.value === "}", input => {
         switch (input.value) {
             case "repeat":
                 return "repeat-" + ProcessRepeatParams(input.data.split(",").map(x => x.trim().toLowerCase()));
@@ -68,7 +68,9 @@ export const Compile = (input: string) : string => {
             default:
                 return input.join("");
         }
-    }).join("") + after + afterNot + "/" + Object.keys(flags).filter(key => flags[key]).join("");
+    }).join("");
+
+    return "/" + before + beforeNot + body + after + afterNot + "/" + Object.keys(flags).filter(key => flags[key]).join("");
 }
 
 const HandleFunction = (token: Token) : string => {
