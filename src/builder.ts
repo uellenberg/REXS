@@ -166,7 +166,7 @@ export interface ExpressionBuilderFunctions {
      */
     Group: EmptyCallback;
     /**
-     * Match the value of a previous capturing group, by its zero-based ID.
+     * Match the value of a previous capturing group, by its one-based ID.
      */
     BackRef: BackRef;
     /**
