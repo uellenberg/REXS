@@ -9,38 +9,36 @@
     <img src="https://img.shields.io/github/workflow/status/uellenberg/REXS/Build%20and%20Test/master" alt="Build">
     <img src="https://img.shields.io/npm/dt/REXS" alt="Downloads">
 </p>
-REXS is a library that helps create regular expressions without knowing the syntax. It works by using functions to build regular expressions.
+REXS is a language to create regular expressions. It can be used to create more readable and easy-to-modify expressions that compile to clean and readable regular expressions.
 
 ## Example
 An example usage of REXS can be to match on any URL that starts with http:// or https://, then match any subdomains, followed by the domain and .com:
-```javascript
-const {ExpressionBuilder, Assertion, RepeatOptions, Characters} = require("rexs");
+```rexs
+assert(START);
 
-ExpressionBuilder((functions) => {
-    functions.Assert(Assertion.START);
+match("http");
 
-    functions.Match("http");
+repeat(0, 1) {
+    match("s");
+}
 
-    functions.Repeat(() => {
-        functions.Match("s");
-    }, RepeatOptions.ZeroOrOne());
+match("://");
 
-    functions.Match("://");
+repeat(0, inf, nongreedy) {
+    repeat(1, inf, nongreedy) {
+        match(ANY);
+    }
+    match(".");
+}
 
-    functions.Repeat(() => {
-        functions.Repeat(() => {
-            functions.Match(Characters.ANY);
-        }, RepeatOptions.OneOrMore(false));
-        functions.Match(".");
-    }, RepeatOptions.ZeroOrMore(false));
+group() {
+    repeat(1, inf, nongreedy) {
+        match(ANY);
+    }
 
-    functions.Repeat(() => {
-        functions.Match(Characters.ANY);
-    }, RepeatOptions.OneOrMore(false));
+    match(".com");
+}
 
-    functions.Match(".com");
-
-    functions.Assert(Assertion.END);
-});
+assert(END);
 ```
-This example will be compiled to `/^http(?:s?):\/\/(?:(?:.+?)\.*?)(?:.+?)\.com$/`.
+This example will be compiled to `/^https?:\/\/(?:.+?\.)*?(.+?\.com)$/`.
