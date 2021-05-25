@@ -43,7 +43,7 @@ export const ParseInput = (input: string) => {
             case "or":
                 return "(?:" + input.join("|") + ")";
             case "orpart":
-                return "(?:" + input.join("") + ")";
+                return input.join("");
             case "set":
                 return "[" + (data === "not" ? "^" : "") + input.join("") + "]";
             case "before":
