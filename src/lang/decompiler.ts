@@ -77,6 +77,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
     for(let i = 0; i < tokens.length; i++){
         if(tokens[i].isToken && ["(", "["].includes(tokens[i].value) && !recurseOnSet && !isSet){
             if(curRepeat){
+                curRepeat.params = getRepeatParams(curRepeat.params);
                 out.push(curRepeat);
 
                 curRepeat = null;
@@ -120,12 +121,13 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                         awaitingEnd = false;
                     }
                 } else if(curRepeat && token.value === "?") {
-                    curRepeat.params += "?";
+                    curRepeat.params = getRepeatParams(curRepeat.params + "?");
                     out.push(curRepeat);
 
                     curRepeat = null;
                     awaitingEnd = false;
                 } else if(curRepeat) {
+                    curRepeat.params = getRepeatParams(curRepeat.params);
                     out.push(curRepeat);
 
                     curRepeat = null;
@@ -155,6 +157,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                 }
             } else {
                 if(curRepeat){
+                    curRepeat.params = getRepeatParams(curRepeat.params);
                     out.push(curRepeat);
 
                     curRepeat = null;
@@ -172,7 +175,10 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
 
     if(depth !== 0) throw new Error("The input contains an invalid sequence.");
 
-    if(curRepeat) out.push(curRepeat);
+    if(curRepeat){
+        curRepeat.params = getRepeatParams(curRepeat.params);
+        out.push(curRepeat);
+    }
     if(onOR) {
         orOut.body.push({tag: "orpart", body: out});
         out = [orOut];
@@ -203,6 +209,47 @@ const tokenToREXS = (token: Token) : REXSData => {
     if(assertion.length > 0) return {tag: "assert", params: assertion[0]};
 
     return {tag: "match", params: "\""+unEscape(token.value)+"\""};
+}
+
+const getRepeatParams = (params: string) : string => {
+    let startVal: string = "";
+    let endVal: string = "";
+    let greedy: string = "";
+
+    if(params.startsWith("*")){
+        startVal = "0";
+        endVal = "inf";
+    }
+    if(params.startsWith("+")){
+        startVal = "1";
+        endVal = "inf";
+    }
+    if(params.startsWith("?")){
+        startVal = "0";
+        endVal = "1";
+    }
+
+    if(params.startsWith("{")){
+        const split = params.substring(1, params.length-1).split(",");
+
+        if(split.length === 1){
+            startVal = split[0];
+        }
+        if(split.length === 2){
+            startVal = split[0];
+            if(split[1]){
+                endVal = split[1];
+            } else {
+                endVal = "inf";
+            }
+        }
+    }
+
+    if(params.length > 1 && params[params.length-1] === "?"){
+        greedy = "nongreedy";
+    }
+
+    return [startVal, endVal, greedy].filter(Boolean).join(", ");
 }
 
 //expressions/unescape.rexs
