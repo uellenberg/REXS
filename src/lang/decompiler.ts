@@ -1,4 +1,5 @@
-import {CustomTokenizer, RecursiveMap, RegexTokenizer, Token, TokenizerChain} from "parselib";
+import {CustomTokenizer, RegexTokenizer, Token, TokenizerChain} from "parselib";
+import {AssertionMap, CharactersMap} from "../builderHelpers";
 
 export const Decompile = (input: string) : string => {
     let split = input.split("/");
@@ -10,7 +11,7 @@ export const Decompile = (input: string) : string => {
     const tokens = groupTokenizerChain.run(split.join("/"));
 
     //TODO: format parsed regex
-    return JSON.stringify(JSON.stringify(Recurse(tokens)));
+    return JSON.stringify(Recurse(tokens));
 }
 
 //I don't even want to think about this code ever again.
@@ -124,13 +125,15 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     orOut.body.push({tag: "orpart", body: out});
                     out = [];
                 } else {
-                    out.push({tag: "match", params: token.value});
+                    out.push(tokenToREXS(token));
                 }
             } else if(isSet && outerTag) {
                 if(token.value === "^" && i === 0){
                     outerTag.params = "not";
                 } else if(token.value === "-" && i !== 0 && i !== tokens.length-1) {
                     out.push({tag: "to"});
+                } else if(token.isToken && !["]", "\\", "^", "-"].includes(token.value)) {
+                    out.push(tokenToREXS(token));
                 } else {
                     out.push({tag: "match", params: "\""+token.value+"\""});
                 }
@@ -142,8 +145,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     awaitingEnd = false;
                 }
 
-                //TODO: handle special characters
-                out.push({tag: "match", params: "\""+token.value+"\""});
+                out.push({tag: "match", params: token.value});
             }
         }
 
@@ -175,6 +177,16 @@ interface REXSData {
     tag: string;
     params?: string;
     body?: REXSData[];
+}
+
+const tokenToREXS = (token: Token) : REXSData => {
+    const character = Object.keys(CharactersMap).filter(key => CharactersMap[key] === token.value);
+    if(character.length > 0) return {tag: "match", params: character[0]};
+
+    const assertion = Object.keys(AssertionMap).filter(key => AssertionMap[key] === token.value);
+    if(assertion.length > 0) return {tag: "assert", params: assertion[0]};
+
+    return {tag: "match", params: "\""+token.value+"\""};
 }
 
 //expressions/tokenizer.rexs

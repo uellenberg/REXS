@@ -1,6 +1,6 @@
 import {Assertion, Characters, LiteralCharacterInterface} from "./builder";
 
-const CharactersMap = {
+export const CharactersMap = {
     ANY: ".",
     DIGIT: "\\d",
     NON_DIGIT: "\\D",
@@ -49,7 +49,7 @@ export const ParseAssertion = (assertion: Assertion) : string => {
     throw new Error("Invalid input for assertion: " + assertion);
 }
 
-const AssertionMap = {
+export const AssertionMap = {
     START: "^",
     END: "$",
     WORD_BOUNDARY: "\\b",
