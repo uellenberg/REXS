@@ -6,12 +6,28 @@ export const Decompile = (input: string) : string => {
     split.shift();
 
     const flags = split.pop();
-    //TODO: add flags
 
     const tokens = groupTokenizerChain.run(split.join("/"));
 
-    //TODO: format parsed regex
-    return JSON.stringify(Recurse(tokens));
+    return REXSDataToString(Recurse(tokens));
+}
+
+const REXSDataToString = (data: REXSData[], indent: number = 0) : string => {
+    const indentStr = " ".repeat(indent * 4);
+
+    let lines: string[] = [];
+
+    for (let tag of data) {
+        lines.push(indentStr + tag.tag + "(" + (tag.params || "") + ")" + (tag.body ? " {" : ";"));
+
+        if(tag.body){
+            lines.push(REXSDataToString(tag.body, indent+1));
+
+            lines.push(indentStr + "}");
+        }
+    }
+
+    return lines.join("\n");
 }
 
 //I don't even want to think about this code ever again.
@@ -145,7 +161,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     awaitingEnd = false;
                 }
 
-                out.push({tag: "match", params: token.value});
+                out.push({tag: "match", params: "\""+token.value+"\""});
             }
         }
 
