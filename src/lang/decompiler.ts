@@ -159,9 +159,9 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     curRepeat = null;
                     awaitingEnd = false;
 
-                    out.push(tokenToREXS(token, isSet));
+                    pushMatch(tokenToREXS(token, isSet), out);
                 } else {
-                    out.push(tokenToREXS(token, isSet));
+                    pushMatch(tokenToREXS(token, isSet), out);
                 }
             } else if(isSet && outerTag) {
                 if(token.value === "^" && i === 0){
@@ -169,9 +169,9 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                 } else if(token.value === "-" && i !== 0 && i !== tokens.length-1) {
                     out.push({tag: "to"});
                 } else if(token.isToken && !["]", "\\", "^", "-"].includes(token.value)) {
-                    out.push(tokenToREXS(token, isSet));
+                    pushMatch(tokenToREXS(token, isSet), out);
                 } else {
-                    out.push({tag: "match", params: "\""+unEscape(token.value)+"\""});
+                    pushMatch(tokenToREXS(token, isSet), out);
                 }
             } else {
                 if(curRepeat){
@@ -182,7 +182,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     awaitingEnd = false;
                 }
 
-                out.push({tag: "match", params: "\""+unEscape(token.value)+"\""});
+                pushMatch(tokenToREXS(token, isSet), out);
             }
         }
 
@@ -248,6 +248,15 @@ const tokenToREXS = (token: Token, isSet: boolean) : REXSData => {
     }
 
     return {tag: "match", params: "\""+unEscape(token.value)+"\""};
+}
+
+const pushMatch = (match: REXSData, out: REXSData[]) => {
+    if(match.tag !== "match" || out.length < 1 || out[out.length-1].tag !== "match" || !out[out.length-1].params || !out[out.length-1].params.startsWith("\"") || !match.params || !match.params.startsWith("\"")) {
+        out.push(match);
+        return;
+    }
+
+    out[out.length-1].params = out[out.length-1].params.substring(0, out[out.length-1].params.length-1) + match.params.substring(1, match.params.length-1) + "\"";
 }
 
 const getRepeatParams = (params: string) : string => {
