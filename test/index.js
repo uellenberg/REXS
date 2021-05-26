@@ -1,5 +1,6 @@
 const {ExpressionBuilder, Assertion, RepeatOptions, Characters, Compile, Decompile} = require("../dist/cjs/index");
 const {expect} = require("chai");
+const fs = require("fs");
 
 describe("Compiler", () => {
     context("with simple URL test", () => {
@@ -43,6 +44,17 @@ describe("Decompiler", () => {
             expect(Compile(Decompile("/^https?:\\/\\/(?:.+?\\.)*?(.+?\\.com)$/g"))).to.eql("/^https?:\\/\\/(?:.+?\\.)*?(.+?\\.com)$/g");
         });
     });
+
+    //https://gist.github.com/jacksonfdam/3000275
+    const lines = fs.readFileSync("test/expressions.txt", "utf-8").replace(/\r/g, "").split("\n");
+
+    for (let i = 0; i < lines.length; i+=3) {
+        context("with expression #" + (Math.floor(i/3)+1) + " (line " + (i+1) + ")", () => {
+            it("should return the correct regular expression.", () => {
+                expect(Compile(Decompile(lines[i]))).to.eql(lines[i+1]);
+            });
+        });
+    }
 });
 
 describe("ExpressionBuilder", () => {
