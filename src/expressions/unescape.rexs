@@ -11,7 +11,5 @@ repeat(0, inf) {
 match("\");
 
 group() {
-    set() {
-        match("*.^$|[]-()+?{},\/");
-    }
+    match(ANY);
 }

@@ -291,7 +291,7 @@ const getRepeatParams = (params: string) : string => {
 
 //expressions/unescape.rexs
 const unEscape = (val: string) : string => {
-    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,\/])/g, "$1").replace(/\\\\/g, "\\");
+    return val.replace(/(?<!\\)(?:\\\\)*\\(.)/g, "$1").replace(/\\\\/g, "\\");
 }
 
 //expressions/tokenizer.rexs
