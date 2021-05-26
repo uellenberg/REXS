@@ -96,7 +96,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
             if (depth === 0) startPos = i;
             depth++;
             if(tokens[i].value === "[") recurseOnSet = true;
-        } else if(tokens[i].isToken && [")", "]"].includes(tokens[i].value) && !isSet) {
+        } else if(tokens[i].isToken && [")", "]"].includes(tokens[i].value) && !isSet && !(recurseOnSet && tokens[i].value === ")")) {
             if(startPos === -1) throw new Error("The input contains an invalid sequence.");
 
             if(depth === 1) {
