@@ -1,4 +1,4 @@
-const {ExpressionBuilder, Assertion, RepeatOptions, Characters, Compile} = require("../dist/cjs/index");
+const {ExpressionBuilder, Assertion, RepeatOptions, Characters, Compile, Decompile} = require("../dist/cjs/index");
 const {expect} = require("chai");
 
 describe("Compiler", () => {
@@ -33,6 +33,14 @@ group() {
 assert(END);`);
 
             expect(expression).to.eql("/^https?:\\/\\/(?:.+?\\.)*?(.+?\\.com)$/");
+        });
+    });
+});
+
+describe("Decompiler", () => {
+    context("with a simple URL test", () => {
+        it("should return the correct regular expression.", () => {
+            expect(Compile(Decompile("/^https?:\\/\\/(?:.+?\\.)*?(.+?\\.com)$/g"))).to.eql("/^https?:\\/\\/(?:.+?\\.)*?(.+?\\.com)$/g");
         });
     });
 });
