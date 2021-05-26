@@ -5,11 +5,12 @@ export const Decompile = (input: string) : string => {
     let split = input.split("/");
     split.shift();
 
-    const flags = split.pop();
+    let flags = split.pop().split("").map(flag => "flag(" + flag + ");").join("\n");
+    if(flags.length > 0) flags += "\n\n";
 
     const tokens = groupTokenizerChain.run(split.join("/"));
 
-    return REXSDataToString(Recurse(tokens));
+    return flags + REXSDataToString(Recurse(tokens));
 }
 
 const REXSDataToString = (data: REXSData[], indent: number = 0) : string => {
