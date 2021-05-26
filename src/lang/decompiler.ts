@@ -1,7 +1,9 @@
 import {CustomTokenizer, RegexTokenizer, Token, TokenizerChain} from "parselib";
 import {AssertionMap, CharactersMap} from "../builderHelpers";
 
-export const Decompile = (input: string) : string => {
+export const Decompile = (input: string | RegExp) : string => {
+    if(input instanceof RegExp) input = input.toString();
+
     let split = input.split("/");
     split.shift();
 
