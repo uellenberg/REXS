@@ -7,7 +7,7 @@
         <img src="https://codecov.io/gh/uellenberg/REXS/branch/master/graph/badge.svg?token=DK9G4WE5OA" alt="Codecov">
     </a>
     <img src="https://img.shields.io/github/workflow/status/uellenberg/REXS/Build%20and%20Test/master" alt="Build">
-    <img src="https://img.shields.io/npm/dt/REXS" alt="Downloads">
+    <img src="https://img.shields.io/npm/dt/rexs" alt="Downloads">
 </p>
 REXS is a language to create regular expressions. It can be used to create more readable and easy-to-modify expressions that compile to clean and readable regular expressions.
 
