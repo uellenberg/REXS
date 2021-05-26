@@ -1,6 +1,6 @@
 {
   "name": "rexs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "REXS is a language for creating regular expressions. This library can compile REXS to a regular expression.",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
