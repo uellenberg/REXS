@@ -159,9 +159,9 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                     curRepeat = null;
                     awaitingEnd = false;
 
-                    out.push(tokenToREXS(token));
+                    out.push(tokenToREXS(token, isSet));
                 } else {
-                    out.push(tokenToREXS(token));
+                    out.push(tokenToREXS(token, isSet));
                 }
             } else if(isSet && outerTag) {
                 if(token.value === "^" && i === 0){
@@ -169,7 +169,7 @@ const Recurse = (tokens: Token[], data?: RecurseData) : REXSData[] => {
                 } else if(token.value === "-" && i !== 0 && i !== tokens.length-1) {
                     out.push({tag: "to"});
                 } else if(token.isToken && !["]", "\\", "^", "-"].includes(token.value)) {
-                    out.push(tokenToREXS(token));
+                    out.push(tokenToREXS(token, isSet));
                 } else {
                     out.push({tag: "match", params: "\""+unEscape(token.value)+"\""});
                 }
@@ -219,12 +219,12 @@ interface REXSData {
     body?: REXSData[];
 }
 
-const tokenToREXS = (token: Token) : REXSData => {
+const tokenToREXS = (token: Token, isSet: boolean) : REXSData => {
     const character = Object.keys(CharactersMap).filter(key => CharactersMap[key] === token.value);
     if(character.length > 0) return {tag: "match", params: character[0]};
 
     const assertion = Object.keys(AssertionMap).filter(key => AssertionMap[key] === token.value);
-    if(assertion.length > 0) return {tag: "assert", params: assertion[0]};
+    if(assertion.length > 0 && !isSet) return {tag: "assert", params: assertion[0]};
 
     if(token.value.startsWith("\\c")){
         return {tag: "match", params: "CONTROL, " + token.value.substring(2)};
