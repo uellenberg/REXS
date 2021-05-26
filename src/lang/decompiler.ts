@@ -223,6 +223,27 @@ const tokenToREXS = (token: Token) : REXSData => {
     const assertion = Object.keys(AssertionMap).filter(key => AssertionMap[key] === token.value);
     if(assertion.length > 0) return {tag: "assert", params: assertion[0]};
 
+    if(token.value.startsWith("\\c")){
+        return {tag: "match", params: "CONTROL, " + token.value.substring(2)};
+    }
+    if(token.value.startsWith("\\x")){
+        return {tag: "match", params: "HEX, " + token.value.substring(2)};
+    }
+    if(token.value.startsWith("\\u")){
+        return {tag: "match", params: "HEX, " + token.value.substring(2)};
+    }
+    if(token.value.startsWith("\\")){
+        const parse = parseInt(token.value.substring(1));
+
+        if(!isNaN(parse)){
+            if(parse === 0){
+                return {tag: "match", params: "NULL"};
+            } else {
+                return {tag: "backref", params: token.value.substring(1)};
+            }
+        }
+    }
+
     return {tag: "match", params: "\""+unEscape(token.value)+"\""};
 }
 
@@ -269,7 +290,7 @@ const getRepeatParams = (params: string) : string => {
 
 //expressions/unescape.rexs
 const unEscape = (val: string) : string => {
-    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,])/g, "$1").replace(/\\\\/g, "\\");
+    return val.replace(/(?<!\\)(?:\\\\)*\\([\*\.\^\$\|\[\]\-\(\)\+\?\{\}\,\/])/g, "$1").replace(/\\\\/g, "\\");
 }
 
 //expressions/tokenizer.rexs
