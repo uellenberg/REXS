@@ -14,7 +14,8 @@ export const CharactersMap = {
     LINEFEED: "\\n",
     FORMFEED: "\\f",
     BACKSPACE: "[\\b]",
-    NULL: "(?:\\0)"
+    NULL: "(?:\\0)",
+    QUOTE: "\""
 }
 
 export const ParseMatch = (character: Characters | LiteralCharacterInterface | string) : string => {
