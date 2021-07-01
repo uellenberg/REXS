@@ -11,6 +11,8 @@
 </p>
 REXS is a language to create regular expressions. It can be used to create more readable and easy-to-modify expressions that compile to clean and readable regular expressions.
 
+For more information on REXS' syntax (or how to use it), take a look at https://esolangs.org/wiki/REXS.
+
 ## Example
 An example usage of REXS can be to match on any URL that starts with http:// or https://, then match any subdomains, followed by the domain and .com:
 ```rexs
