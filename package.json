@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/uellenberg/REXS",
   "devDependencies": {
-    "@types/node": "^15.0.1",
+    "@types/node": "^18.14.5",
     "chai": "^4.3.4",
     "codecov": "^3.8.1",
     "eslint": "^7.25.0",
